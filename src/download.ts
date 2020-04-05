@@ -1,6 +1,7 @@
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import fs from 'fs'
+import keepTrying from 'keep-trying'
 
 interface DownloadOptions {
     fileName: string,
@@ -16,11 +17,14 @@ export function downloadAssignment(opts: DownloadOptions): Promise<string> {
         .then(output => {
             if (output.stderr)
                 throw output.stderr
-            return moveAssignment(opts)
+            return keepTrying(() => moveAssignment(opts), {
+                maxAttempts: 10,
+                baseTime: opts.timeout || 100
+            })
         })
 }
 
-function moveAssignment(opts: DownloadOptions): Promise<string> {
+function moveAssignment(opts: DownloadOptions   ): Promise<string> {
     const location = `${opts.moveDir}/${opts.fileName}`
     return new Promise((resolve, reject) => {
         setTimeout(() => {

@@ -21,5 +21,8 @@
     "mocha": "^7.0.0",
     "ts-mocha": "^7.0.0",
     "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "keep-trying": "^2.0.2"
   }
 }
